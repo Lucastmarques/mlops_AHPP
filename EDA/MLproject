@@ -1,0 +1,7 @@
+name: download_data_eda
+conda_env: conda_eda.yml
+
+entry_points:
+  main:
+    command: >-
+      jupyter-lab
