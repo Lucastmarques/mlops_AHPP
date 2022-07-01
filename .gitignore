@@ -1,4 +1,6 @@
 */mlruns
+*/wandb
+*/artifacts
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
