@@ -4,13 +4,10 @@ Date: 30 Jun. 2022
 Receive an input data and fetch the raw data, generating a new artifact in wandb project.
 """
 import argparse
-from distutils.command.clean import clean
 import logging
-from math import remainder
 import os
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, MinMaxScaler
 from sklearn.compose import ColumnTransformer
