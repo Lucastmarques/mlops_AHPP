@@ -7,9 +7,9 @@ This module is responsible to fetch data as a new artifact in Weights and Biases
 Here is an example to run this step.
 
 ```bash
-mlflow run . -P project_name="mlops_AHPP" \
-             -P artifact_name="raw_data.csv" \
-             -P artifact_type="raw_data" \
-             -P artifact_description="Raw Aribnb house prices in Rio de Janeiro data" \
-             -P input_url="https://drive.google.com/uc?id=16zF4MHEP_bBxAEWpQgVocPupTjRRAgfP"
+mlflow run . -P input_artifact="mlops_AHPP_fetch" \
+             -P artifact_name="clean_data.csv" \
+             -P artifact_type="clean_data" \
+             -P artifact_description="Clean Aribnb house prices in Rio de Janeiro data" \
+             -P project_name="mlops_AHPP_preprocessing"
 ```
