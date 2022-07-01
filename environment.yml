@@ -15,6 +15,7 @@ dependencies:
   - requests=2.24.0
   - python=3.8
   - pip:
-      - wandb==0.12.6
+      - protobuf==3.20.1
       - mlflow==1.14.1
+      - wandb==0.12.6
       - hydra-joblib-launcher==1.1.2

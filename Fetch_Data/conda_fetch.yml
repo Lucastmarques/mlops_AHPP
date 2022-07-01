@@ -1,0 +1,10 @@
+name: fetch_data
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pip=21.3.1
+  - pip:
+      - protobuf==3.20.1
+      - wandb==0.12.9
+      - gdown==4.4.0

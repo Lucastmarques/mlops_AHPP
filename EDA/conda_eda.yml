@@ -13,5 +13,5 @@ dependencies:
   - ipywidgets=7.6.5
   - jupyterlab_widgets=1.0.2
   - pip:
+      - protobuf==3.20.1
       - wandb==0.12.9
-      - gdown==4.4.0
