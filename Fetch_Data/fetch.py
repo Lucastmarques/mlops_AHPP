@@ -70,6 +70,7 @@ def process_args(args):
         args.artifact_name: Name for the W&B artifact that will be created
         args.artifact_type: Type of the artifact to create
         args.artifact_description: Description for the artifact
+        args.project_name: Name of WandB project you want to access/create
     """
     run = wandb.init(project=args.project_name,
                      job_type="fetch_data")
