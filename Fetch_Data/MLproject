@@ -1,5 +1,5 @@
 name: fetch_data
-conda_env: conda.yml
+conda_env: conda_fetch.yml
 
 entry_points:
   main:
@@ -18,7 +18,7 @@ entry_points:
         type: str
         default: Sample Artifact
       project_name:
-        description: Name of wandb project
+        description: Name of W&B project
         type: str
 
     command: >-

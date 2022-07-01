@@ -6,11 +6,8 @@ Receive an input data and fetch the raw data, generating a new artifact in wandb
 import argparse
 import logging
 import os
-import gzip
-import zipfile
-from shutil import copyfileobj
+from sckitlearn.model_selection import train_test_split
 import wandb
-import gdown
 
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s %(message)s",
@@ -18,48 +15,17 @@ logging.basicConfig(level=logging.INFO,
 
 LOGGER = logging.getLogger()
 
+def isolate_columns():
+    pass
 
-def file_validation(filename):
-    """Check if file format is valid
-    Args:
-        filename(str): Name of dataset file
-    """
-    if not filename.endswith(('.csv', '.gz', '.zip')):
-        log = "File format <%s> not accepted. Allowed formats: .csv, .gz, .zip" % \
-            filename.split('.')[-1]
-        raise ValueError(log)
+def remove_duplicated():
+    pass
 
+def treat_missing_values():
+    pass
 
-def get_csv_file(filename):
-    """Get csv file from filename
-    Args:
-        filename(str): Name of dataset file
-    Returns:
-        output(str): Output csv filename
-    """
-    output = 'raw_data.csv'
-    if filename.endswith('.zip'):
-        LOGGER.info("Unzipping zip file")
-        with zipfile.ZipFile(filename) as zip_ref:
-            zip_ref.extractall(output)
-
-        LOGGER.info("Removing zipped temporary file")
-        os.remove(filename)
-
-    elif filename.endswith('.gz'):
-        LOGGER.info("Unzipping gz file")
-        with gzip.open(filename, 'rb') as zip_ref:
-            with open(output, 'wb') as file_out:
-                copyfileobj(zip_ref, file_out)
-
-        LOGGER.info("Removing zipped temporary file")
-        os.remove(filename)
-
-    else:
-        LOGGER.info("File is already unzipped")
-        output = filename
-    return output
-
+def categorical_to_numeric():
+    pass
 
 def process_args(args):
     """Process args passed by cmdline and fetch raw data
@@ -98,14 +64,14 @@ def process_args(args):
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(
-        description="Fetch csv data from google drive",
+        description="Preproccessing raw data from W&B artifact",
         fromfile_prefix_chars="@"
     )
 
     PARSER.add_argument(
-        "--input_url",
+        "--input_artifact",
         type=str,
-        help="Google Drive URL to download dataset (Allowed formats: .csv, .gz, .zip)",
+        help="Fully qualified name for the raw data artifact",
         required=True
     )
 
@@ -120,7 +86,8 @@ if __name__ == "__main__":
         "--artifact_type",
         type=str,
         help="Type of the artifact to create",
-        required=True
+        required=False,
+        default='clean_data'
     )
 
     PARSER.add_argument(

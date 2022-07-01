@@ -1,5 +1,5 @@
 name: download_data_eda
-conda_env: conda_eda.yml
+conda_env: conda.yml
 
 entry_points:
   main:
