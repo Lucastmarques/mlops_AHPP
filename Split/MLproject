@@ -1,0 +1,38 @@
+name: split_data
+conda_env: conda.yml
+
+entry_points:
+  main:
+    input_artifact:
+      description: Fully qualified name for the clean data artifact
+      type: str
+    artifact_root:
+      description: Name for the W&B artifact that will be created
+      type: str
+    artifact_type:
+      description: Type of the artifact to create
+      type: str
+      default: trainvaltest_data
+    test_size:
+      description: Ratio of dataset used to test
+      type: float
+    project_name:
+      description: Name of W&B project
+      type: str
+    random_state:
+      description: Integer to use to seed the random number generator
+      type: int
+      default: 42
+    stratify:
+      description: If provided, it is considered a column name to be used for stratified splitting
+      type: str
+      default: "null"
+
+    command: >-
+      python split.py --input_artifact {input_artifact} \
+                      --artifact_root {artifact_root} \
+                      --artifact_type {artifact_type} \
+                      --test_size {test_size} \
+                      --random_state {random_state} \
+                      --stratify {stratify} \
+                      --project_name {project_name}
