@@ -1,4 +1,4 @@
-name: fetch_data
+name: preprocessing
 conda_env: conda.yml
 
 entry_points:
