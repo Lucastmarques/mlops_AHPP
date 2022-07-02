@@ -1,24 +1,25 @@
-name: preprocessing
+name: clean_data
 conda_env: conda.yml
 
 entry_points:
   main:
-    input_artifact:
+    parameters:
+      input_artifact:
         description: Fully qualified name for the raw data artifact
         type: str
-    artifact_name:
-      description: Name for the W&B artifact that will be created
-      type: str
-    artifact_type:
-      description: Type of the artifact to create
-      type: str
-      default: clean_data
-    artifact_description:
-      description: Description for the artifact
-      type: str
-    project_name:
-      description: Name of W&B project
-      type: str
+      artifact_name:
+        description: Name for the W&B artifact that will be created
+        type: str
+      artifact_type:
+        description: Type of the artifact to create
+        type: str
+        default: clean_data
+      artifact_description:
+        description: Description for the artifact
+        type: str
+      project_name:
+        description: Name of W&B project
+        type: str
 
     command: >-
       python preprocessing.py --input_artifact {input_artifact} \

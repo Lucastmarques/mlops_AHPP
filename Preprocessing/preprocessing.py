@@ -64,7 +64,9 @@ variable.
     clean_data = raw_data.dropna(subset=columns_drop)
     for col in columns_imputer:
         inputer = SimpleImputer(strategy='mean', missing_values=np.nan)
-        clean_data[col] = inputer.fit_transform(clean_data[col])
+        array = clean_data[col].values
+        array = inputer.fit_transform(array.reshape(-1,1))
+        clean_data[col] = array.reshape(-1)
     return clean_data
 
 def treat_bathroom_text(value):
@@ -177,7 +179,7 @@ def process_args(args):
         type=args.artifact_type,
         description=args.artifact_description
     )
-    artifact.add_file(clean_data)
+    artifact.add_file(filename)
 
     LOGGER.info("Logging artifact to wandb project")
     run.log_artifact(artifact)
