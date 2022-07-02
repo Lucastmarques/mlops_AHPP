@@ -1,0 +1,23 @@
+name: data_checks
+conda_env: conda.yml
+
+entry_points:
+  main:
+    parameters:
+      clean_data_artifact:
+        description: Fully-qualified name for the artifact to be used as cleaned dataset
+      reference_artifact:
+        description: Fully-qualified name for the artifact to be used as reference dataset (usually the train split)
+        type: str
+      sample_artifact:
+        description: Fully-qualified name for the artifact to be used as new data sample (usually the test split)
+        type: str
+      ks_alpha:
+        description: Threshold for the (pre-trial) p-value for the KS test
+        type: float
+
+    command: >-
+      pytest . -s -vv --reference_artifact {reference_artifact} \
+                      --sample_artifact {sample_artifact} \
+                      --ks_alpha {ks_alpha} \
+                      --clean_data_artifact {clean_data_artifact}
