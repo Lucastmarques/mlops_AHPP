@@ -1,5 +1,5 @@
 name: fetch_data
-conda_env: conda_fetch.yml
+conda_env: conda.yml
 
 entry_points:
   main:
