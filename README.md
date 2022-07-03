@@ -8,7 +8,7 @@
 
 <img src="images/header.png" alt="mlops pipeline">
 
-> Implementing a complete MLOps pipeline to deploy an AirBnb House Price Prediction (AHPP) model in production.
+> Implementing a complete MLOps pipeline to deploy an AirBnb House Price Prediction (AHPP) model in production. If you are a portuguese speaker, try to watch my 5 minutes [explanation video](https://bit.ly/3OWtTy4) about this project!
 
 ### Adjustments and improvements
 
