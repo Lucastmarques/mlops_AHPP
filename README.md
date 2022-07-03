@@ -68,7 +68,7 @@ NOTE: If you haven't created a project named `mlops_AHPP_fetch` yet, the wandb w
 
 ### 2. Exploratory Data Analysis:
 
-This step is optional, but if you really want to reproduce exactly what I did, then go to `eda` folder and run the command written in *eda/README.md*.
+This step is optional, but if you really want to reproduce exactly what I did, then go to *eda* folder and run the command written in *eda/README.md*.
 
 ```
 mlflow run .
@@ -90,7 +90,7 @@ mlflow run . -P input_artifact="mlops_AHPP_fetch/raw_data.csv:latest" \
 
 ### 4. Data Segregation
 
-To reproduce this step, go to `split_data` folder and run the following command:
+To reproduce this step, go to *split_data* folder and run the following command:
 
 ```
 mlflow run . -P input_artifact="mlops_AHPP_fetch/raw_data.csv:latest" \
@@ -101,7 +101,7 @@ mlflow run . -P input_artifact="mlops_AHPP_fetch/raw_data.csv:latest" \
 ```
 
 ### 5. Data Checks
-Even though we tried to follow the pipeline presented in the header image, we have to put this step after Data Segragation, so we are able to peform a hypothesis test to reject or aprove our train/test data. To reproduce this step, run:
+Even though we tried to follow the pipeline presented in the header image, we have to put this step after Data Segragation, so we are able to peform a hypothesis test to reject or aprove our train/test data. To reproduce this step, go to *data_checks* folder and run:
 
 ```
 mlflow run . -P reference_artifact="mlops_AHPP_split/train_data.csv:latest" \
