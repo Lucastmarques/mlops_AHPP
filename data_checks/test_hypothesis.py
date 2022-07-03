@@ -6,9 +6,9 @@ a valid train/test splitted dataset.
 """
 import scipy.stats
 
-def test_kolmogorov_smirnov(data, ks_alpha):
+def test_kolmogorov_smirnov(splitted_data, ks_alpha):
     """Check if we have corrects train/test splitted datasets"""
-    sample1, sample2 = data
+    sample1, sample2 = splitted_data
 
     numerical_columns = [
         "Entire home/apt", "Private room", "Shared room", "Hotel room",
