@@ -8,7 +8,7 @@ import pytest
 import pandas as pd
 import wandb
 
-run = wandb.init(project="mlops_AHPP_data_checks", job_type="data_chacks")
+run = wandb.init(project="mlops_AHPP_data_checks", job_type="data_checks")
 
 def pytest_addoption(parser):
     """Create parse arguments to pytest"""
