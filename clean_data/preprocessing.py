@@ -85,8 +85,8 @@ def treat_bathroom_text(value):
 
     try:
         return float(value.split(' ')[0])
-    except AttributeError as excep:
-        LOGGER.warning(excep)
+    except ValueError as excep:
+        LOGGER.debug(excep)
         return 0.5
 
 
