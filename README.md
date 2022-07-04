@@ -110,6 +110,13 @@ mlflow run . -P reference_artifact="mlops_AHPP_split/train_data.csv:latest" \
              -P clean_data_artifact="mlops_AHPP_preprocessing/clean_data.csv:latest"
 ```
 
+### ✨ Weights and Biases
+
+In this project, we are heavily using the [wandb](https://wandb.ai/site) tool to trace our pipeline. Here is an example of how WandB creates and manages our pipeline:
+
+<img src="images/wandb_pipeline.PNG" alt="wandb pipeline">
+
+Where `fetch_data` is our first process that generates the artifact `raw_data`. This artifact is used in EDA process (called `run(raw_data)`) and in the `preprocess_data`. The latter generates a new artifact called `clean_data` which is used by the data checks and data segregation processes (`data_segregation` and `data_checks` respectively). The pipeline ends with the generation of the `trainvaltest_data` artifact by the data segregation process which is also used by the data checks process.
 
 ## 📫 Contributing to AHPP
 If you want to contribute to the AHPP project, please follow these steps:
