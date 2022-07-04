@@ -122,7 +122,7 @@ If you want to contribute to the AHPP project, please follow these steps:
 
 Alternatively, take a look at the GitHub documentation on [how to create a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
-## 📝 Licença
+## 📝 License
 
 This project is under license. See the [LICENSE](LICENSE.md) file for more details.
 
