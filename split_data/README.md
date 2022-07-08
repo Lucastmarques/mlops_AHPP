@@ -13,9 +13,9 @@ mlflow run . -P input_artifact="mlops_AHPP_preprocessing/clean_data.csv:latest" 
              -P artifact_root="data" \
              -P artifact_type="trainvaltest_data" \
              -P test_size=0.3 \
-             -P stratify="null" \
+             -P stratify="room_type" \
              -P random_state="13" \
              -P project_name="mlops_AHPP_split"
 ```
 
-Note: Only use `stratify` parameter if you have a classification problem with 2 or more classes. Remember that in binary classification you have two classes: Positive and Negative.
+Note: Only use `stratify` parameter if you have a categorical column with 2 or more classes. Remember that in binary categorical data you have two classes: Positive and Negative.
