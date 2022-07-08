@@ -4,7 +4,7 @@ This module is responsible to check if everything is strictly correct in the cle
 
 Here we do both deterministics and non-deterministics (statistical) tests on clean dataset and train/test data, respectively.
 
-On deterministic tests, we first verify if our clean dataset has more than 3000 rows, then we check that the dataset has all columns we expected, with expected dtypes and within specific ranges. We could also check that categorical data has the expected classes, but since we have already handled the categorical data in the data cleaning step, this is not necessary.
+On deterministic tests, we first verify if our clean dataset has more than 3000 rows, then we check that the dataset has all columns we expected, with expected dtypes and within specific ranges. Finally, we also check that categorical data has the expected classes..
 
 On hypothesis test, we did a [kolmogorov smirnov test](https://pt.wikipedia.org/wiki/Teste_Kolmogorov-Smirnov). Making a long story short, we create two hypothesis where the null hypothesis (H0) is that the two distributions (from test and train data) are identical, while the alternative (H1) is that they are not identical.
 

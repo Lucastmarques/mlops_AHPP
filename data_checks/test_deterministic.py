@@ -6,24 +6,23 @@ a valid clean dataset.
 """
 import pandas as pd
 
+
 def test_dataset_size(full_data):
     """Check if Dataset has more than 3000 rows"""
     assert len(full_data) > 3000, "The choosen Dataset is smaller than 3000 rows."
+
 
 def test_column_presence_and_type(full_data):
     """Check if dataset has all needed columns with the correct type"""
 
     required_columns = {
-        "Entire home/apt": pd.api.types.is_float_dtype,
-        "Private room": pd.api.types.is_float_dtype,
-        "Shared room": pd.api.types.is_float_dtype,
-        "Hotel room": pd.api.types.is_float_dtype,
-        "accommodates": pd.api.types.is_float_dtype,
-        "bathrooms_text": pd.api.types.is_float_dtype,
+        "room_type": pd.api.types.is_object_dtype,
+        "accommodates": pd.api.types.is_int64_dtype,
+        "bathrooms": pd.api.types.is_float_dtype,
         "bedrooms": pd.api.types.is_float_dtype,
         "beds": pd.api.types.is_float_dtype,
         "price": pd.api.types.is_float_dtype,
-        "number_of_reviews": pd.api.types.is_float_dtype,
+        "number_of_reviews": pd.api.types.is_int64_dtype,
         "review_scores_rating": pd.api.types.is_float_dtype,
         "review_scores_accuracy": pd.api.types.is_float_dtype,
         "review_scores_cleanliness": pd.api.types.is_float_dtype,
@@ -34,34 +33,44 @@ def test_column_presence_and_type(full_data):
     }
 
     # Check column presence
-    assert set(full_data.columns.values).issuperset(set(required_columns.keys()))
+    assert set(full_data.columns.values).issuperset(
+        set(required_columns.keys()))
 
     for col_name, format_verification_funct in required_columns.items():
 
         assert format_verification_funct(full_data[col_name]), \
-        f"Column {col_name} failed test {format_verification_funct}"
+            f"Column {col_name} failed test {format_verification_funct}"
+
+
+def test_class_names(full_data):
+    """Check that only the known classes are present"""
+    known_classes = [
+        'Entire home/apt',
+        'Private room',
+        'Shared room',
+        'Hotel room'
+    ]
+
+    assert full_data["room_type"].isin(known_classes).all()
+
 
 def test_column_ranges(full_data):
-    """Check if all columns are normalized"""
+    """Check if all columns have meaningful data ranges"""
 
     ranges = {
-        "Entire home/apt": (0, 1),
-        "Private room": (0, 1),
-        "Shared room": (0, 1),
-        "Hotel room": (0, 1),
-        "accommodates": (0, 1),
-        "bathrooms_text": (0, 1),
-        "bedrooms": (0, 1),
-        "beds": (0, 1),
-        "price": (0, 1),
-        "number_of_reviews": (0, 1),
-        "review_scores_rating": (0, 1),
-        "review_scores_accuracy": (0, 1),
-        "review_scores_cleanliness": (0, 1),
-        "review_scores_checkin": (0, 1),
-        "review_scores_communication": (0, 1),
-        "review_scores_location": (0, 1),
-        "review_scores_value": (0, 1)
+        "accommodates": (1, 999),
+        "bathrooms": (0.0, 99.0),
+        "bedrooms": (1.0, 99.0),
+        "beds": (1.0, 99.0),
+        "price": (0.0, 999999.0),
+        "number_of_reviews": (0, 999999),
+        "review_scores_rating": (0.0, 5.0),
+        "review_scores_accuracy": (0.0, 5.0),
+        "review_scores_cleanliness": (0.0, 5.0),
+        "review_scores_checkin": (0.0, 5.0),
+        "review_scores_communication": (0.0, 5.0),
+        "review_scores_location": (0.0, 5.0),
+        "review_scores_value": (0.0, 5.0)
     }
 
     for col_name, (minimum, maximum) in ranges.items():
