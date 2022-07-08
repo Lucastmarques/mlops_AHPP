@@ -8,6 +8,7 @@ import logging
 import os
 import pandas as pd
 import numpy as np
+from collections import Counter
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, MinMaxScaler
 from sklearn.compose import ColumnTransformer
@@ -64,12 +65,14 @@ variable.
                        'review_scores_cleanliness', 'review_scores_checkin',
                        'review_scores_communication', 'review_scores_location',
                        'review_scores_value']
-    clean_data = raw_data.dropna(subset=columns_drop)
-    for col in columns_imputer:
-        inputer = SimpleImputer(strategy='mean', missing_values=np.nan)
-        array = clean_data[col].values
-        array = inputer.fit_transform(array.reshape(-1, 1))
-        clean_data[col] = array.reshape(-1)
+
+    clean_data = raw_data.dropna(subset=columns_drop).reset_index(drop=True)
+
+    inputer = SimpleImputer(strategy='mean', missing_values=np.nan)
+    array = clean_data[columns_imputer].values
+    array = inputer.fit_transform(array)
+    imputer_df = pd.DataFrame(array, columns=columns_imputer)
+    clean_data = pd.concat([clean_data[columns_drop], imputer_df], axis=1)
     return clean_data
 
 
@@ -89,19 +92,8 @@ def treat_bathroom_text(value):
         LOGGER.debug(excep)
         return 0.5
 
-
-def categorical_to_numeric(raw_data: pd.DataFrame) -> pd.DataFrame:
-    """Transform categorical to numeric data
-    Args:
-        raw_data(pd.DataFrame): DataFrame to be used to transform categorical
-    columns to numeric columns
-    Returns:
-        (pd.DataFrame): DataFrame with only numeric columns
-    Note that we are doing many proccess inside this function, so take care if
-you want to use this function for others dataset.
-    """
+def treat_special_columns(raw_data: pd.DataFrame) -> pd.DataFrame:
     clean_data = raw_data.copy()
-    columns = list(clean_data.columns)
 
     # Treat bathrooms_text column
     LOGGER.info("Treating bathrooms_text column")
@@ -112,54 +104,9 @@ you want to use this function for others dataset.
     # Treat price column from str ($1,000.00) to float64 (1000.00)
     LOGGER.info("Treating price columns")
     clean_data['price'] = clean_data['price'].apply(
-        lambda x: float(x[1:].replace(',', '')))
-
-    # Treat Numeric Cols
-    LOGGER.info("Treating numeric columns")
-    float_cols = ['bathrooms', 'price', 'review_scores_rating',
-                  'review_scores_accuracy', 'review_scores_cleanliness',
-                  'review_scores_checkin', 'review_scores_communication',
-                  'review_scores_location', 'review_scores_value']
-    int_cols = ['accommodates', 'bedrooms', 'beds', 'number_of_reviews']
-    clean_data[float_cols] = clean_data[float_cols].astype('float')
-    clean_data[int_cols] = clean_data[int_cols].astype('int')
-
-    # Treat Categorical data
-    LOGGER.info("Treating categorical columns")
-    cat_col = 'room_type'
-    col_index = columns.index(cat_col)
-    new_columns = columns[:col_index] + \
-        list(clean_data[cat_col].value_counts().index) + \
-        columns[col_index+1:]
-    encoder = LabelEncoder()
-    clean_data[cat_col] = encoder.fit_transform(clean_data[cat_col])
-    transformer = ColumnTransformer([('encoder', OneHotEncoder(), [cat_col])],
-                                    remainder='passthrough')
-    clean_data = transformer.fit_transform(clean_data)
-    clean_data = pd.DataFrame(clean_data, columns=new_columns)
+        lambda x: float(x[1:].replace(',', '')) if isinstance(x, str) else x)
 
     return clean_data
-
-
-def normalize_data(raw_data: pd.DataFrame) -> pd.DataFrame:
-    """Normalize data
-    Args:
-        raw_data(pd.DataFrame): DataFrame to be normalized
-    Returns:
-        (pd.DataFrame): Normalized DataFrame
-    Note that we are not considering the OneHotEncoded columns.
-    """
-    LOGGER.info("Normalizing data")
-    clean_data = raw_data.copy()
-    scaler = MinMaxScaler()
-    columns = ['accommodates', 'bathrooms_text', 'bedrooms', 'beds',
-               'price', 'number_of_reviews', 'review_scores_rating',
-               'review_scores_accuracy', 'review_scores_cleanliness',
-               'review_scores_checkin', 'review_scores_communication',
-               'review_scores_location', 'review_scores_value']
-    clean_data[columns] = scaler.fit_transform(raw_data[columns])
-    return clean_data
-
 
 def process_args(args):
     """Process args passed by cmdline and fetch raw data
@@ -183,8 +130,7 @@ def process_args(args):
     raw_data = isolate_columns(raw_data)
     raw_data = remove_duplicated(raw_data)
     raw_data = treat_missing_values(raw_data)
-    raw_data = categorical_to_numeric(raw_data)
-    clean_data = normalize_data(raw_data)
+    clean_data = treat_special_columns(raw_data)
 
     # Generate a "clean data file"
     filename = "preprocessed_data.csv"
