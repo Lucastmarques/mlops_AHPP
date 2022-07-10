@@ -17,13 +17,9 @@ entry_points:
         description: Description for the artifact
         type: str
         default: Sample Artifact
-      project_name:
-        description: Name of W&B project
-        type: str
 
     command: >-
       python fetch.py --input_url {input_url} \
-                      --project_name {project_name} \
                       --artifact_name {artifact_name} \
                       --artifact_type {artifact_type} \
                       --artifact_description {artifact_description}

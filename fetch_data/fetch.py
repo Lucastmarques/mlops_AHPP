@@ -72,8 +72,7 @@ def process_args(args):
         args.artifact_description: Description for the artifact
         args.project_name: Name of WandB project you want to access/create
     """
-    run = wandb.init(project=args.project_name,
-                     job_type="fetch_data")
+    run = wandb.init(job_type="fetch_data")
 
     LOGGER.info("Dowloading file from %s", args.input_url)
     filename = gdown.download(args.input_url, quiet=False)
@@ -121,13 +120,6 @@ if __name__ == "__main__":
         "--artifact_type",
         type=str,
         help="Type of the artifact to create",
-        required=True
-    )
-
-    PARSER.add_argument(
-        "--project_name",
-        type=str,
-        help="Name of WandB project you want to access/create",
         required=True
     )
 

@@ -118,8 +118,7 @@ def process_args(args):
         args.artifact_description: Description for the artifact
         args.project_name: Name of WandB project you want to access/create
     """
-    run = wandb.init(project=args.project_name,
-                     job_type="preproccess_data")
+    run = wandb.init(job_type="preproccess_data")
 
     LOGGER.info("Dowloading artifact")
     artifact = run.use_artifact(args.input_artifact)
@@ -178,13 +177,6 @@ if __name__ == "__main__":
         help="Type of the artifact to create",
         required=False,
         default='clean_data'
-    )
-
-    PARSER.add_argument(
-        "--project_name",
-        type=str,
-        help="Name of WandB project you want to access/create",
-        required=True
     )
 
     PARSER.add_argument(

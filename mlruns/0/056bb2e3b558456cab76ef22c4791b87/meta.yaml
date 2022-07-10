@@ -1,0 +1,15 @@
+artifact_uri: file:///home/lucastorres/Documents/mlops_AHPP/mlruns/0/056bb2e3b558456cab76ef22c4791b87/artifacts
+end_time: 1657287722935
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 056bb2e3b558456cab76ef22c4791b87
+run_uuid: 056bb2e3b558456cab76ef22c4791b87
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1657287721232
+status: 4
+tags: []
+user_id: lucastorres

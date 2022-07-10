@@ -25,9 +25,6 @@ entry_points:
         description: If provided, it is considered a column name to be used for stratified splitting
         type: str
         default: "null"
-      project_name:
-        description: Name of W&B project
-        type: str
 
     command: >-
       python split.py --input_artifact {input_artifact} \
@@ -35,5 +32,4 @@ entry_points:
                     --artifact_type {artifact_type} \
                     --test_size {test_size} \
                     --random_state {random_state} \
-                    --stratify {stratify} \
-                    --project_name {project_name}
+                    --stratify {stratify}
