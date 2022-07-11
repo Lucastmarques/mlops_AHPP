@@ -101,7 +101,7 @@ def process_args(config: DictConfig):
             os.path.join(root_path, "evaluate"),
             "main",
             parameters={
-                "model_export": f"{config['decision_tree_pipeline']['export_artifact']}:latest",
+                "model_export": f"{config['neural_network_pipeline']['export_artifact']}:latest",
                 "test_data": "test_data.csv:latest"
             }
         )

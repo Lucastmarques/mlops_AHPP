@@ -30,11 +30,13 @@ def isolate_columns(raw_data: pd.DataFrame) -> pd.DataFrame:
     If you need to change columns name, just modify the `columns` list variable.
     """
     LOGGER.info("Isolating specifics columns")
-    columns = ['room_type', 'accommodates', 'bathrooms_text', 'bedrooms', 'beds',
-               'price', 'number_of_reviews', 'review_scores_rating',
-               'review_scores_accuracy', 'review_scores_cleanliness',
-               'review_scores_checkin', 'review_scores_communication',
-               'review_scores_location', 'review_scores_value']
+    columns = ['room_type', 'accommodates', 'bathrooms_text',
+               'bedrooms', 'beds', 'price', 'host_listings_count',
+               'availability_30', 'availability_60', 'availability_90',
+               'availability_365', 'number_of_reviews', 'minimum_nights',
+               'maximum_nights', 'neighbourhood_cleansed', 'host_is_superhost',
+               'host_response_time', 'host_response_rate', 'instant_bookable',
+               'host_identity_verified', 'host_verifications', 'amenities']
     return raw_data[columns]
 
 
@@ -59,20 +61,38 @@ def treat_missing_values(raw_data: pd.DataFrame) -> pd.DataFrame:
 variable.
     """
     LOGGER.info("Treating missing values")
-    columns_drop = ['room_type', 'accommodates', 'bathrooms_text', 'bedrooms',
-                    'beds', 'price', 'number_of_reviews']
-    columns_imputer = ['review_scores_rating', 'review_scores_accuracy',
-                       'review_scores_cleanliness', 'review_scores_checkin',
-                       'review_scores_communication', 'review_scores_location',
-                       'review_scores_value']
+    columns_drop = ['room_type', 'bathrooms_text', 'price']
+    columns_imputer_numerical = [
+        'accommodates', 'bedrooms', 'beds', 'host_listings_count',
+        'availability_30', 'availability_60', 'availability_90',
+        'availability_365', 'number_of_reviews', 'minimum_nights',
+        'maximum_nights',
+    ]
+    columns_imputer_categorical = [
+        'neighbourhood_cleansed', 'host_is_superhost', 'host_response_time',
+        'host_response_rate', 'instant_bookable', 'host_identity_verified',
+        'host_verifications', 'amenities'
+    ]
 
     clean_data = raw_data.dropna(subset=columns_drop).reset_index(drop=True)
 
-    inputer = SimpleImputer(strategy='mean', missing_values=np.nan)
-    array = clean_data[columns_imputer].values
-    array = inputer.fit_transform(array)
-    imputer_df = pd.DataFrame(array, columns=columns_imputer)
-    clean_data = pd.concat([clean_data[columns_drop], imputer_df], axis=1)
+    numerical_inputer = SimpleImputer(strategy='median', missing_values=np.nan)
+    array = clean_data[columns_imputer_numerical].values
+    array = numerical_inputer.fit_transform(array)
+    imputer_numerical_df = pd.DataFrame(
+        array, columns=columns_imputer_numerical)
+
+    numerical_inputer = SimpleImputer(
+        strategy='most_frequent', missing_values=np.nan)
+    array = clean_data[columns_imputer_categorical].values
+    array = numerical_inputer.fit_transform(array)
+    imputer_categorical_df = pd.DataFrame(
+        array, columns=columns_imputer_categorical)
+
+    clean_data = pd.concat(
+        [clean_data[columns_drop], imputer_categorical_df, imputer_numerical_df],
+        axis=1
+    )
     return clean_data
 
 
@@ -92,6 +112,7 @@ def treat_bathroom_text(value):
         LOGGER.debug(excep)
         return 0.5
 
+
 def treat_special_columns(raw_data: pd.DataFrame) -> pd.DataFrame:
     clean_data = raw_data.copy()
 
@@ -102,11 +123,27 @@ def treat_special_columns(raw_data: pd.DataFrame) -> pd.DataFrame:
     clean_data = clean_data.drop(axis=1, labels=['bathrooms_text'])
 
     # Treat price column from str ($1,000.00) to float64 (1000.00)
-    LOGGER.info("Treating price columns")
+    LOGGER.info("Treating price column")
     clean_data['price'] = clean_data['price'].apply(
         lambda x: float(x[1:].replace(',', '')) if isinstance(x, str) else x)
 
+    LOGGER.info("Treating host_response_rate column")
+    clean_data["host_response_rate"] = clean_data["host_response_rate"].apply(
+        lambda x: float(x.replace('%', ''))/100
+    )
+
+    LOGGER.info("Treating integer column")
+    integer_columns = [
+        'accommodates', 'bedrooms', 'beds', 'host_listings_count',
+        'availability_30', 'availability_60', 'availability_90',
+        'availability_365', 'number_of_reviews', 'minimum_nights',
+        'maximum_nights',
+    ]
+    clean_data[integer_columns] = clean_data[integer_columns].round(
+        0).astype(int)
+
     return clean_data
+
 
 def process_args(args):
     """Process args passed by cmdline and fetch raw data

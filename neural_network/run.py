@@ -1,6 +1,6 @@
 """
-Creator: Ivanovitch Silva
-Date: 30 Jan. 2022
+Creator: Lucas Torres Marques
+Date: 10 Jan. 2022
 Implement a machine pipeline component that
 incorporate preprocessing and train stages.
 """
@@ -57,11 +57,13 @@ class HyperModel(Sequential):
 
         early_stopping = EarlyStopping(
             patience=20,
-            min_delta=5, # 5 dollar variance
+            min_delta=1,  # 1 real variance
             monitor='loss',
             mode='min',
             restore_best_weights=True
         )
+
+        LOGGER.info(x_train[:5])
 
         return self.model.fit(
             x_train,
@@ -148,14 +150,109 @@ class FeatureSelector(BaseEstimator, TransformerMixin):
     def transform(self, X, y=None):
         return X[self.feature_names]
 
-# transform numerical features
+# Handling categorical features
+
+
+class CategoricalTransformer(BaseEstimator, TransformerMixin):
+    # Class constructor method that takes one boolean as its argument
+    def __init__(self, new_features=True, colnames=None):
+        self.new_features = new_features
+        self.colnames = colnames
+
+    # Return self nothing else to do here
+    def fit(self, X, y=None):
+        return self
+
+    def get_feature_names(self):
+        return self.colnames.tolist()
+
+    # Transformer method we wrote for this transformer
+    def transform(self, X, y=None):
+        df = pd.DataFrame(X, columns=self.colnames)
+
+        if self.new_features:
+
+            # minimize the cardinality of amenities feature
+            df['amenities'] = df['amenities'].apply(
+                CategoricalTransformer.treat_amenities
+            )
+
+            # decrease the cardinality of neighbourhood_cleansed feature
+            df['neighbourhood_cleansed'] = df['neighbourhood_cleansed'].apply(
+                CategoricalTransformer.treat_neighbourhood_cleansed
+            )
+
+            # decrease the cardinality of neighbourhood_cleansed feature
+            df['host_verifications'] = df['host_verifications'].apply(
+                CategoricalTransformer.treat_host_verifications
+            )
+
+        # update column names
+        self.colnames = df.columns
+        df.dropna(axis=0, inplace=True)
+
+        return df
+
+    @staticmethod
+    def treat_host_verifications(value):
+        value = value.replace('[', '').replace(
+            ']', '').replace("'", '').split(',')
+        amenity_lenghts = len(value)
+
+        if amenity_lenghts < 3:
+            return "Less than 3"
+        elif 6 > amenity_lenghts >= 3:
+            return "Between 3 and 5"
+        elif 9 > amenity_lenghts >= 6:
+            return "Between 6 and 8"
+        else:
+            return "Greater than 8"
+
+    @staticmethod
+    def treat_amenities(value):
+        value = value.replace('[', '').replace(
+            ']', '').replace('"', '').split(',')
+        amenity_lenghts = len(value)
+
+        if amenity_lenghts < 11:
+            return "Less than 11"
+        elif 21 > amenity_lenghts >= 11:
+            return "Between 11 and 20"
+        elif 31 > amenity_lenghts >= 21:
+            return "Between 21 and 30"
+        elif 41 > amenity_lenghts >= 31:
+            return "Between 31 and 40"
+        elif 51 > amenity_lenghts >= 41:
+            return "Between 41 and 50"
+        else:
+            return "Greater than 51"
+
+    @staticmethod
+    def treat_neighbourhood_cleansed(value):
+        noble_area = ['leblon', 'ipanema', 'lagoa', 'gávea',
+                      'jardim botânico', 'leme', 'humaitá',
+                      'copacabana', 'botafogo', 'flamengo',
+                      'são conrado', 'barra da tijuca',
+                      'recreio', 'catete', 'laranjeiras',
+                      'cosme velho', 'glória', 'centro',
+                      'vidigal', 'recreio dos bandeirantes',
+                      'tijuca', 'urca', 'grajaú', 'méier', 'joá',
+                      'alto da boa vista', 'todos os santos', 'anil',
+                      'vila penha', 'andaraí', 'riachuelo']
+
+        if value.lower() in noble_area:
+            return 'noble area'
+        else:
+            return 'others'
 
 
 class NumericalTransformer(BaseEstimator, TransformerMixin):
+    """transform numerical features"""
     # Class constructor method that takes a model parameter as its argument
     # model 0: minmax
     # model 1: standard
     # model 2: without scaler
+
     def __init__(self, model=0, colnames=None):
         self.model = model
         self.colnames = colnames
@@ -250,6 +347,8 @@ def process_args(args):
 
     # Defining the steps in the categorical pipeline
     categorical_pipeline = Pipeline(steps=[('cat_selector', FeatureSelector(categorical_features)),
+                                           ('cat_transformer', CategoricalTransformer(
+                                               colnames=categorical_features)),
                                            # ('cat_encoder','passthrough'
                                            ('cat_encoder', OneHotEncoder(
                                                sparse=False, drop="first"))
@@ -314,7 +413,8 @@ def export_model(run, pipe, x_val, val_pred, export_artifact):
 
         mlflow.keras.save_model(
             pipe['regressor'],  # our pipeline
-            os.path.join(export_path, 'regression'),  # Path to a directory for the produced package
+            # Path to a directory for the produced package
+            os.path.join(export_path, 'regressor'),
             keras_module=tf.keras,
             signature=signature,  # input and output schema
             input_example=x_val.iloc[:2],  # the first few examples
@@ -322,7 +422,8 @@ def export_model(run, pipe, x_val, val_pred, export_artifact):
 
         mlflow.sklearn.save_model(
             pipe['full_pipeline'],  # our pipeline
-            os.path.join(export_path, 'full_pipeline'),  # Path to a directory for the produced package
+            # Path to a directory for the produced package
+            os.path.join(export_path, 'full_pipeline'),
             serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE,
             signature=signature,  # input and output schema
             input_example=x_val.iloc[:2],  # the first few examples

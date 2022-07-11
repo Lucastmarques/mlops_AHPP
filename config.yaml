@@ -7,7 +7,7 @@ main:
     - segregate
     - check_data
     - neural_network
-    #- evaluate
+    - evaluate
   random_seed: 42
 data:
   input_url: "https://drive.google.com/uc?id=16zF4MHEP_bBxAEWpQgVocPupTjRRAgfP"
@@ -21,14 +21,14 @@ data:
 neural_network_pipeline:
   neural_network:
     optimizer: adam
-    learning_rate: 1e-2
-    epochs: 100
+    learning_rate: 5e-3
+    epochs: 300
     batch_size: 32
     num_layers: 4
-    units: 512
-    dropout: 0.5
+    units: 64
+    dropout: 0
     kernel_initializer: he_uniform
-    batch_normalization: true
+    batch_normalization: false
     hidden_activation: relu
     output_activation: linear
     loss: 'mae'
@@ -38,7 +38,7 @@ neural_network_pipeline:
       - 'mae'
     verbose: 1
   numerical_pipe:
-    model: 1
+    model: 0
   training:
     count: 5
   export_artifact: "model_export"

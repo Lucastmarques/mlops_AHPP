@@ -1,4 +1,4 @@
-name: neural_network
+name: test_data
 channels:
   - conda-forge
   - defaults
@@ -8,9 +8,7 @@ dependencies:
   - scikit-learn=1.0.2
   - matplotlib=3.2.2
   - pillow=8.4.0
-  - mlflow=1.14.1
   - pip:
       - tensorflow==2.9.1
       - wandb==0.12.9
       - mlflow==1.14.1
-      - omegaconf==2.1.1
