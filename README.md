@@ -14,14 +14,20 @@
 
 This project is still under development and the next steps will focus on the following tasks:
 
+#### v1.0.0
 - [x] Fetch Data
 - [x] Pre-processing
 - [x] Data Checks
 - [x] Data Segragation (train/test splitting)
-- [ ] Define and create a ML model
-- [ ] Train and validation
-- [ ] Test
-- [ ] Store in Model Registry
+- [x] Define and create a ML model
+- [x] Train and validation
+- [x] Test
+- [x] Store in Model Registry
+
+#### v1.1.0
+- [ ] Hyperparameter Tuning
+- [ ] Try new models
+- [ ] Try new features
 
 ## 💻 Requirements
 
@@ -37,78 +43,40 @@ Before you get started, make sure you meet to the following requirements:
 To install everything you need to reproduce this project, create the project env using conda:
 
 Command Line:
-```
+```bash
 conda env create -f environment.yml
 ```
 
 Then change your env to mlops:
-```
+```bash
 conda activate mlops
 ```
 
 ## ☕ Using AHPP
 
-You may have noticed that each folder has a specific name that references the pipeline in the header image. So, to reproduce the AHPP correctly, you must follow these steps exactly, changing the input arguments as needed: 
+First, take a look at `config.yaml` file and see if all parameters are good for you.
 
-### 1. Fetch data:
+To run the entire project, you just need to run the following command:
 
-Go to `fetch_data` folder and run the command written in README. Here is an example:
-
-```
-mlflow run . -P project_name="mlops_AHPP_fetch" \
-             -P artifact_name="raw_data.csv" \
-             -P artifact_type="raw_data" \
-             -P artifact_description="Raw Aribnb house prices in Rio de Janeiro data" \
-             -P input_url="https://drive.google.com/uc?id=16zF4MHEP_bBxAEWpQgVocPupTjRRAgfP"
-```
-
-This command will download the Google Drive file passed by `input_url` argument, save the raw dataset in wandb as an artifact with the informations passed by `artifact_name`, `artifact_type` and `artifact_description`. The artifact will be saved in `mlops_AHPP_fetch` wandb project, according to `project_name` argument.
-
-NOTE: If you haven't created a project named `mlops_AHPP_fetch` yet, the wandb will automatically handle that by creating a new project named `mlops_AHPP_fetch`.
-
-### 2. Exploratory Data Analysis:
-
-This step is optional, but if you really want to reproduce exactly what I did, then go to *eda* folder and run the command written in *eda/README.md*.
-
-```
+```bash
 mlflow run .
 ```
 
-This step will open a jupyterlab with a python notebook where you can play around and discover new thing about the dataset used in this project. 
+Another way to run this project is using project releases on github, here is an example:
 
-### 3. Pre-processing
-
-In this step the dataset will be cleaned according to what we discorvered in EDA step. To reproduce this step, go to *clean_data* folder and execute the following command:
-
-```
-mlflow run . -P input_artifact="mlops_AHPP_fetch/raw_data.csv:latest" \
-             -P artifact_name="clean_data.csv" \
-             -P artifact_type="clean_data" \
-             -P artifact_description="Clean Aribnb house prices in Rio de Janeiro data" \
-             -P project_name="mlops_AHPP_preprocessing"
+```bash
+mlflow run -v 1.0.0 https://github.com/Lucastmarques/mlops_AHPP
 ```
 
-### 4. Data Segregation
+### Changing parameters
 
-To reproduce this step, go to *split_data* folder and run the following command:
+If you wanna change a specific value from `config.yaml` but don't want to open and edit it, you can overwrite values for a single execution using the parameter `hydra_options`. For instance, if you want to overwrite the project name in wandb:
 
-```
-mlflow run . -P input_artifact="mlops_AHPP_fetch/raw_data.csv:latest" \
-             -P artifact_name="clean_data.csv" \
-             -P artifact_type="clean_data" \
-             -P artifact_description="Clean Aribnb house prices in Rio de Janeiro data" \
-             -P project_name="mlops_AHPP_preprocessing"
+```bash
+mlflow run -v 1.0.0 https://github.com/Lucastmarques/mlops_AHPP -P hydra_options="main.project_name=Remote_Execution"
 ```
 
-### 5. Data Checks
-Even though we tried to follow the pipeline presented in the header image, we have to put this step after Data Segragation, so we are able to peform a hypothesis test to reject or aprove our train/test data. To reproduce this step, go to *data_checks* folder and run:
-
-```
-mlflow run . -P reference_artifact="mlops_AHPP_split/train_data.csv:latest" \
-             -P sample_artifact="mlops_AHPP_split/test_data.csv:latest" \
-             -P ks_alpha=0.05 \
-             -P clean_data_artifact="mlops_AHPP_preprocessing/clean_data.csv:latest"
-```
+Just be careful with syntax and the location of the variable you want to overwrite (in this case, our variable is inside `main` section in `config.yaml` file).
 
 ### ✨ Weights and Biases
 
