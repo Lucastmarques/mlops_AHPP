@@ -6,11 +6,8 @@ Here we are using a compressed *.gz* file saved in Google Drive as `input data`.
 
 ## Run Steps
 
-Here is an example to run this step.
+Here is an example to run this step. Inside the project root directory, run:
 
 ```bash
-mlflow run . -P artifact_name="raw_data.csv" \
-             -P artifact_type="raw_data" \
-             -P artifact_description="Raw Aribnb house prices in Rio de Janeiro data" \
-             -P input_url="https://drive.google.com/uc?id=16zF4MHEP_bBxAEWpQgVocPupTjRRAgfP"
+mlflow run . -P hydra_options="main.execute_steps='neural_network'"
 ```
