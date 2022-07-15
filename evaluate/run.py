@@ -16,6 +16,7 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import explained_variance_score
 from sklearn.metrics import max_error
 from sklearn.metrics import mean_squared_error
+import matplotlib.pyplot as plt
 
 # configure logging
 logging.basicConfig(level=logging.INFO,
@@ -72,8 +73,18 @@ def process_args(args):
     # Metric: Explained Variance Score
     evs = explained_variance_score(y_test, predict)
     run.summary["Explained Variance Score"] = evs
-    
 
+    LOGGER.info("Plotting predictions")
+    plt.scatter(predict, y_test)
+    plt.xlabel("Predicted")
+    plt.ylabel("True")
+
+    LOGGER.info("Uploading image")
+    run.log(
+        {
+            "predicted": wandb.Image(plt)
+        }
+    )    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(

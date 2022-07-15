@@ -57,13 +57,10 @@ class HyperModel(Sequential):
 
         early_stopping = EarlyStopping(
             patience=20,
-            min_delta=1,  # 1 real variance
             monitor='loss',
             mode='min',
             restore_best_weights=True
         )
-
-        LOGGER.info(x_train[:5])
 
         return self.model.fit(
             x_train,
@@ -99,7 +96,7 @@ class HyperModel(Sequential):
             if i == 0:
                 model.add(
                     Dense(
-                        units=self.model_config.units,
+                        units=self.model_config[f'layer_{i+1}'],
                         input_shape=input_shape,
                         kernel_initializer=self.model_config.kernel_initializer
                     )
@@ -107,7 +104,7 @@ class HyperModel(Sequential):
             else:
                 model.add(
                     Dense(
-                        units=self.model_config.units,
+                        units=self.model_config[f'layer_{i+1}'],
                         kernel_initializer=self.model_config.kernel_initializer
                     )
                 )
@@ -310,7 +307,7 @@ def process_args(args):
     LOGGER.info("x val: {}".format(x_val.shape))
     LOGGER.info("y val: {}".format(y_val.shape))
 
-    LOGGER.info("Removal Outliers")
+    LOGGER.info("Removal Outliers from Features")
     # temporary variable
     x = x_train.select_dtypes(["int64", "float"]).copy()
 
