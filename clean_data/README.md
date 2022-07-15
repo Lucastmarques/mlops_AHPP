@@ -6,11 +6,8 @@ By far the most specific and longest step. In this module we had to isolate the 
 
 ## Run Steps
 
-Here is an example to run this step.
+Here is an example to run this step. Inside the project root directory, run:
 
 ```bash
-mlflow run . -P input_artifact="mlops_AHPP_fetch/raw_data.csv:latest" \
-             -P artifact_name="clean_data.csv" \
-             -P artifact_type="clean_data" \
-             -P artifact_description="Clean Aribnb house prices in Rio de Janeiro data"
+mlflow run . -P hydra_options="main.execute_steps='preprocess'"
 ```
