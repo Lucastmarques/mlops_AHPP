@@ -9,8 +9,7 @@ Here we are using a compressed *.gz* file saved in Google Drive as `input data`.
 Here is an example to run this step.
 
 ```bash
-mlflow run . -P project_name="mlops_AHPP_fetch" \
-             -P artifact_name="raw_data.csv" \
+mlflow run . -P artifact_name="raw_data.csv" \
              -P artifact_type="raw_data" \
              -P artifact_description="Raw Aribnb house prices in Rio de Janeiro data" \
              -P input_url="https://drive.google.com/uc?id=16zF4MHEP_bBxAEWpQgVocPupTjRRAgfP"

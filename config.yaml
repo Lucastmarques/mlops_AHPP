@@ -1,0 +1,49 @@
+main:
+  project_name: mlops_AHPP_full_pipeline
+  experiment_name: dev
+  execute_steps:
+    - download
+    - preprocess
+    - segregate
+    - check_data
+    - neural_network
+    - evaluate
+  random_seed: 42
+data:
+  input_url: "https://drive.google.com/uc?id=16zF4MHEP_bBxAEWpQgVocPupTjRRAgfP"
+  reference_dataset: "mlops_AHPP_full_pipeline/train_data.csv:latest"
+  sample_dataset: "mlops_AHPP_full_pipeline/test_data.csv:latest"
+  ks_alpha: 0.05
+  test_size: 0.3
+  val_size: 0.3
+  stratify: room_type
+  target: price
+neural_network_pipeline:
+  neural_network:
+    optimizer: adam
+    learning_rate: 3e-5
+    epochs: 500
+    batch_size: 128
+    num_layers: 6
+    layer_1: 1032
+    layer_2: 1032
+    layer_3: 640
+    layer_4: 256
+    layer_5: 128
+    layer_6: 1032
+    dropout: 0.3
+    kernel_initializer: he_uniform
+    batch_normalization: true
+    hidden_activation: relu
+    output_activation: linear
+    loss: mae
+    metrics:
+      - mse
+      - mape
+      - mae
+    verbose: 1
+  numerical_pipe:
+    model: 0
+  training:
+    count: 5
+  export_artifact: "model_export"
