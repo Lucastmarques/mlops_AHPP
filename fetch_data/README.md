@@ -9,5 +9,5 @@ Here we are using a compressed *.gz* file saved in Google Drive as `input data`.
 Here is an example to run this step. Inside the project root directory, run:
 
 ```bash
-mlflow run . -P hydra_options="main.execute_steps='neural_network'"
+mlflow run . -P hydra_options="main.execute_steps='download'"
 ```
