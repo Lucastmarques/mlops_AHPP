@@ -6,16 +6,10 @@ To split the data, we are using the `train_test_split` function from `sklearn.mo
 
 ## Run Steps
 
-Here is an example to run this step.
+Here is an example to run this step. Inside the project root directory, run:
 
 ```bash
-mlflow run . -P input_artifact="mlops_AHPP_preprocessing/clean_data.csv:latest" \
-             -P artifact_root="data" \
-             -P artifact_type="trainvaltest_data" \
-             -P test_size=0.3 \
-             -P stratify="room_type" \
-             -P random_state="13" \
-             -P project_name="mlops_AHPP_split"
+mlflow run . -P hydra_options="main.execute_steps='segregate'"
 ```
 
 Note: Only use `stratify` parameter if you have a categorical column with 2 or more classes. Remember that in binary categorical data you have two classes: Positive and Negative.
