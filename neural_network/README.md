@@ -11,5 +11,5 @@ Many hyperparameters can be controlled via the `config.yaml` file, so feel free 
 Here is an example to run this step. Inside the project root directory, run:
 
 ```bash
-mlflow run . -P hydra_options="main.execute_steps='enural_network'"
+mlflow run . -P hydra_options="main.execute_steps='neural_network'"
 ```
