@@ -114,6 +114,14 @@ def treat_bathroom_text(value):
 
 
 def treat_special_columns(raw_data: pd.DataFrame) -> pd.DataFrame:
+    """Treat special columns from raw_data dataset
+    Args:
+        raw_data(pd.DataFrame): dataset to treat the special columns.
+    Returns:
+        clean_data(pd.DataFrame): clean dataset.
+    The special columns so far are 'bathrooms_text', 'price',
+    'host_response_rate' and columns with dtype=int.
+    """
     clean_data = raw_data.copy()
 
     # Treat bathrooms_text column
@@ -144,6 +152,24 @@ def treat_special_columns(raw_data: pd.DataFrame) -> pd.DataFrame:
 
     return clean_data
 
+def remove_outliers_iqr(raw_data: pd.DataFrame, column: str):
+    """Remove outliers from a given columns
+    Args:
+        raw_data (pd.DataFrame): dataset.
+        column (str): column to get the outliers from.
+    Returns:
+        clean_data (pd.DataFrame): dataset without outliers on the
+    given column.   
+    """
+    LOGGER.info(f"Removal outliers from target '{column}'")
+    clean_data = raw_data.copy()
+    Q1=clean_data['price'].quantile(0.25)
+    Q3=clean_data['price'].quantile(0.75)
+    IQR=Q3-Q1
+    clean_data = clean_data[~((clean_data['price']<(Q1-1.5*IQR)) | (clean_data['price']>(Q3+1.5*IQR)))]
+    LOGGER.info("raw_data shape [original]: {}".format(raw_data.shape))
+    LOGGER.info("raw_data shape [outlier removal]: {}".format(clean_data.shape))
+    return clean_data
 
 def process_args(args):
     """Process args passed by cmdline and fetch raw data
@@ -166,7 +192,8 @@ def process_args(args):
     raw_data = isolate_columns(raw_data)
     raw_data = remove_duplicated(raw_data)
     raw_data = treat_missing_values(raw_data)
-    clean_data = treat_special_columns(raw_data)
+    raw_data = treat_special_columns(raw_data)
+    clean_data = remove_outliers_iqr(raw_data, 'price')
 
     # Generate a "clean data file"
     filename = "preprocessed_data.csv"
