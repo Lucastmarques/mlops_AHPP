@@ -84,7 +84,7 @@ In this project, we are heavily using the [wandb](https://wandb.ai/site) tool to
 
 <img src="images/wandb_pipeline.PNG" alt="wandb pipeline">
 
-Where `fetch_data` is our first process that generates the artifact `raw_data`. This artifact is used in EDA process (called `run(raw_data)`) and in the `preprocess_data`. The latter generates a new artifact called `clean_data` which is used by the data checks and data segregation processes (`data_segregation` and `data_checks` respectively). The pipeline ends with the generation of the `trainvaltest_data` artifact by the data segregation process which is also used by the data checks process.
+Where `fetch_data` is our first process that generates the artifact `raw_data`. This artifact is used in EDA process (called `run(raw_data)`) and in the `preprocess_data`. The latter generates a new artifact called `clean_data` which is used by the data checks and data segregation processes (`data_segregation` and `data_checks` respectively). Then we generate the `segregated_data` artifact by the data segregation process which is used by the data checks, train and test processes. Finally we can train our model in `train` step. This one generates the `model_export` artifact whith our pipeline model. The pipeline ends in the `test` step, this receives the `model_export` and `segregated_data` artifacts as inputs. 
 
 ## 📫 Contributing to AHPP
 If you want to contribute to the AHPP project, please follow these steps:
